@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Revenue Recovery Agent</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 25px 40px;
+        }
+
+
+        header h1 {
+            margin: 0 0 8px 0;
+        }
+
+
+        header p {
+            margin: 0;
+            color: #d1d5db;
+        }
+
+
+        .container {
+            width: 92%;
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+
+        h2 {
+            margin-top: 30px;
+        }
+
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .metric-card h3 {
+            margin-top: 0;
+        }
+
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+        }
+
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .status {
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           COMMON INPUT AREA
+        ===================================================== */
+
+        .profile-input {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        .profile-input input,
+        .analysis-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+
+        .profile-input button,
+        .analysis-button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        .analysis-button {
+            background: #2563eb;
+        }
+
+
+        .analysis-button:hover {
+            opacity: 0.9;
+        }
+
+
+        /* =====================================================
+           CUSTOMER PROFILE
+        ===================================================== */
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+
+        .profile-box {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+
+        .profile-box h4 {
+            margin-top: 0;
+        }
+
+
+        .profile-history {
+            margin-top: 20px;
+        }
+
+
+        .history-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+
+
+        .history-item p {
+            margin: 6px 0;
+        }
+
+
+        .history-status {
+            font-weight: bold;
+        }
+
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        .profile-error {
+            padding: 15px;
+            border-radius: 8px;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        /* =====================================================
+           QUEUE
+        ===================================================== */
+
+        .queue-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .queue-card h3 {
+            margin-top: 0;
+        }
+
+
+        .profile-button {
+            margin: 10px 0 15px 0;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+        }
+
+
+        .recovery-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+
+        .recovery-buttons button {
+            flex: 1;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        .recovery-action-button {
+            background: #2563eb;
+        }
+
+
+        .recovered-button {
+            background: #166534;
+        }
+
+
+        .failed-button {
+            background: #991b1b;
+        }
+
+
+        .recovery-buttons button:hover {
+            opacity: 0.9;
+        }
+
+
+        /* =====================================================
+           AI DECISION
+        ===================================================== */
+
+        .decision-box {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f9fafb;
+            border-left: 4px solid #111827;
+            border-radius: 6px;
+        }
+
+
+        /* =====================================================
+           AI ANALYSIS RESULT
+        ===================================================== */
+
+        .analysis-result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+        }
+
+
+        .analysis-result h3 {
+            margin-top: 0;
+        }
+
+
+        .analysis-result p {
+            margin: 7px 0;
+        }
+
+
+        /* =====================================================
+           RECOVERY EXECUTION RESULT
+        ===================================================== */
+
+        .recovery-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+        }
+
+
+        .recovery-result.success {
+            background: #ecfdf5;
+            border-left-color: #166534;
+        }
+
+
+        .recovery-result.error {
+            background: #fef2f2;
+            border-left-color: #991b1b;
+        }
+
+
+        .recovery-result h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+
+        .recovery-result p {
+            margin: 7px 0;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .queue-empty {
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 20px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .recovery-buttons {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<header>
+
+    <h1>
+        AI Revenue Recovery Agent
+    </h1>
+
+    <p>
+        AI-powered failed payment analysis and recovery dashboard
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- =====================================================
+         BACKEND CONNECTION
+    ===================================================== -->
+
+    <div class="card">
+
+        <h2>
+            Backend Connection
+        </h2>
+
+        <p
+            id="connectionStatus"
+            class="status"
+        >
+            Checking backend connection...
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         DASHBOARD OVERVIEW
+    ===================================================== -->
+
+    <h2>
+        Dashboard Overview
+    </h2>
+
+
+    <div class="metric-grid">
+
+
+        <div class="metric-card">
+
+            <h3>
+                Pending Failed Payments
+            </h3>
+
+            <p
+                id="totalFailedPayments"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Amount Currently at Risk
+            </h3>
+
+            <p
+                id="totalAmountAtRisk"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                High Risk Payments
+            </h3>
+
+            <p
+                id="highRiskPayments"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Medium Risk Payments
+            </h3>
+
+            <p
+                id="mediumRiskPayments"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Low Risk Payments
+            </h3>
+
+            <p
+                id="lowRiskPayments"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         REVENUE RECOVERY METRICS
+    ===================================================== -->
+
+    <h2>
+        Revenue Recovery Metrics
+    </h2>
+
+
+    <div class="metric-grid">
+
+
+        <div class="metric-card">
+
+            <h3>
+                Recovered Payments
+            </h3>
+
+            <p
+                id="recoveredPayments"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Revenue Recovered
+            </h3>
+
+            <p
+                id="revenueRecovered"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Pending Recovery
+            </h3>
+
+            <p
+                id="pendingRecovery"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Completed Recovery Success Rate
+            </h3>
+
+            <p
+                id="recoverySuccessRate"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Failed Recovery
+            </h3>
+
+            <p
+                id="failedRecovery"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <h3>
+                Revenue Still at Risk
+            </h3>
+
+            <p
+                id="revenueStillAtRisk"
+                class="metric-value"
+            >
+                Loading...
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE AI PAYMENT ANALYSIS
+    ===================================================== -->
+
+    <h2>
+        Analyze New Failed Payment
+    </h2>
+
+
+    <div class="card">
+
+        <p>
+            Enter a failed payment and let the AI agent
+            decide the recommended recovery action in real time.
+        </p>
+
+
+        <div class="profile-input">
+
+            <input
+                class="analysis-input"
+                type="text"
+                id="analysisCustomerId"
+                placeholder="Customer ID"
+            >
+
+
+            <input
+                class="analysis-input"
+                type="number"
+                id="analysisAmount"
+                placeholder="Amount"
+                min="0"
+                step="0.01"
+            >
+
+
+            <input
+                class="analysis-input"
+                type="text"
+                id="analysisPaymentMethod"
+                placeholder="Payment Method"
+            >
+
+
+            <input
+                class="analysis-input"
+                type="text"
+                id="analysisFailureReason"
+                placeholder="Failure Reason"
+            >
+
+
+            <input
+                class="analysis-input"
+                type="number"
+                id="analysisRetryCount"
+                placeholder="Retry Count"
+                min="0"
+                value="0"
+            >
+
+
+            <button
+                type="button"
+                class="analysis-button"
+                onclick="analyzeNewPayment()"
+            >
+                🤖 Analyze Payment
+            </button>
+
+        </div>
+
+
+        <div
+            id="analysisResult"
+            class="analysis-result"
+        >
+
+            Enter payment details and click
+            <strong>Analyze Payment</strong>.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CUSTOMER RECOVERY PROFILE
+    ===================================================== -->
+
+    <h2>
+        Customer Recovery Profile
+    </h2>
+
+
+    <div class="card">
+
+        <p>
+            Enter a customer ID to view the customer's
+            recovery profile and complete payment history.
+        </p>
+
+
+        <div class="profile-input">
+
+            <input
+                type="text"
+                id="customerIdInput"
+                placeholder="Example: CUST007"
+            >
+
+
+            <button
+                type="button"
+                onclick="loadCustomerProfile()"
+            >
+                View Customer Profile
+            </button>
+
+        </div>
+
+
+        <div
+            id="customerProfileResult"
+            style="margin-top:20px;"
+        >
+
+            Enter a customer ID to view the profile.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECOVERY PRIORITY QUEUE
+    ===================================================== -->
+
+    <h2>
+        Recovery Priority Queue
+    </h2>
+
+
+    <div class="card">
+
+        <p>
+            The AI agent ranks pending failed payments
+            so the highest-priority recovery opportunities
+            can be handled first.
+        </p>
+
+
+        <div id="priorityQueue">
+
+            Loading recovery priorities...
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   BACKEND URL
+========================================================= */
+
+const BACKEND_URL =
+    "http://127.0.0.1:8000";
+
+
+/* =========================================================
+   BACKEND CONNECTION
+========================================================= */
+
+async function checkBackend() {
+
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/health`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Health check failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        status.textContent =
+            "Backend Connected: " +
+            data.status;
+
+    }
+
+    catch (error) {
+
+        status.textContent =
+            "Backend Connection Failed";
+
+
+        console.error(
+            "Backend connection error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+async function loadDashboard() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/dashboard`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Dashboard request failed"
+            );
+
+        }
+
+
+        document.getElementById(
+            "totalFailedPayments"
+        ).textContent =
+            data.total_failed_payments;
+
+
+        document.getElementById(
+            "totalAmountAtRisk"
+        ).textContent =
+            "₹" +
+            Number(
+                data.total_amount_at_risk
+            ).toLocaleString("en-IN");
+
+
+        document.getElementById(
+            "highRiskPayments"
+        ).textContent =
+            data.high_risk_payments;
+
+
+        document.getElementById(
+            "mediumRiskPayments"
+        ).textContent =
+            data.medium_risk_payments;
+
+
+        document.getElementById(
+            "lowRiskPayments"
+        ).textContent =
+            data.low_risk_payments;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RECOVERY METRICS
+========================================================= */
+
+async function loadRecoveryMetrics() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/dashboard`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Recovery metrics request failed"
+            );
+
+        }
+
+
+        document.getElementById(
+            "recoveredPayments"
+        ).textContent =
+            data.recovered_payments;
+
+
+        document.getElementById(
+            "revenueRecovered"
+        ).textContent =
+            "₹" +
+            Number(
+                data.revenue_recovered
+            ).toLocaleString("en-IN");
+
+
+        document.getElementById(
+            "pendingRecovery"
+        ).textContent =
+            data.pending_recovery;
+
+
+        document.getElementById(
+            "recoverySuccessRate"
+        ).textContent =
+            data.recovery_success_rate +
+            "%";
+
+
+        document.getElementById(
+            "failedRecovery"
+        ).textContent =
+            data.failed_recovery;
+
+
+        document.getElementById(
+            "revenueStillAtRisk"
+        ).textContent =
+            "₹" +
+            Number(
+                data.revenue_still_at_risk
+            ).toLocaleString("en-IN");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recovery metrics error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LIVE AI PAYMENT ANALYSIS
+========================================================= */
+
+async function analyzeNewPayment() {
+
+    const customerId =
+        document.getElementById(
+            "analysisCustomerId"
+        ).value.trim();
+
+
+    const amount =
+        Number(
+            document.getElementById(
+                "analysisAmount"
+            ).value
+        );
+
+
+    const paymentMethod =
+        document.getElementById(
+            "analysisPaymentMethod"
+        ).value.trim();
+
+
+    const failureReason =
+        document.getElementById(
+            "analysisFailureReason"
+        ).value.trim();
+
+
+    const retryCount =
+        Number(
+            document.getElementById(
+                "analysisRetryCount"
+            ).value
+        );
+
+
+    const resultBox =
+        document.getElementById(
+            "analysisResult"
+        );
+
+
+    /* -----------------------------------------------------
+       VALIDATION
+    ----------------------------------------------------- */
+
+    if (
+        !customerId ||
+        !amount ||
+        !paymentMethod ||
+        !failureReason
+    ) {
+
+        resultBox.innerHTML = `
+
+            <div class="profile-error">
+
+                Please enter all required payment details.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    if (amount <= 0) {
+
+        resultBox.innerHTML = `
+
+            <div class="profile-error">
+
+                Amount must be greater than zero.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    if (
+        Number.isNaN(retryCount) ||
+        retryCount < 0
+    ) {
+
+        resultBox.innerHTML = `
+
+            <div class="profile-error">
+
+                Retry count must be zero or greater.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       SHOW LOADING
+    ----------------------------------------------------- */
+
+    resultBox.innerHTML = `
+
+        <div class="decision-box">
+
+            🤖 AI is analyzing the payment...
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/analyze-payment`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        customer_id:
+                            customerId,
+
+                        amount:
+                            amount,
+
+                        payment_method:
+                            paymentMethod,
+
+                        failure_reason:
+                            failureReason,
+
+                        retry_count:
+                            retryCount
+
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                data.error ||
+                "AI analysis failed."
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           DISPLAY AI RESULT
+        ------------------------------------------------- */
+
+        resultBox.innerHTML = `
+
+            <div class="analysis-result">
+
+                <h3>
+                    🤖 AI Analysis Result
+                </h3>
+
+
+                <p>
+
+                    <strong>
+                        Payment ID:
+                    </strong>
+
+                    ${data.id}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Customer:
+                    </strong>
+
+                    ${data.customer_id}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Amount:
+                    </strong>
+
+                    ₹${Number(
+                        data.amount
+                    ).toLocaleString("en-IN")}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Payment Method:
+                    </strong>
+
+                    ${data.payment_method}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Failure Reason:
+                    </strong>
+
+                    ${data.failure_reason}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Recovery Action:
+                    </strong>
+
+                    ${data.recovery_action}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Risk Score:
+                    </strong>
+
+                    ${data.risk_score}/100
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Priority:
+                    </strong>
+
+                    ${data.priority}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Customer Message:
+                    </strong>
+
+                    ${data.customer_message}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        AI Decision Explanation:
+                    </strong>
+
+                </p>
+
+
+                <p>
+                    ${data.decision_explanation}
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Recovery Status:
+                    </strong>
+
+                    <span
+                        class="status-badge status-${data.recovery_status}"
+                    >
+                        ${data.recovery_status}
+                    </span>
+
+                </p>
+
+
+            </div>
+
+        `;
+
+
+        /* -------------------------------------------------
+           REFRESH DASHBOARD
+        ------------------------------------------------- */
+
+        await loadDashboard();
+
+        await loadRecoveryMetrics();
+
+        await loadRecoveryPriority();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "AI analysis error:",
+            error
+        );
+
+
+        resultBox.innerHTML = `
+
+            <div class="profile-error">
+
+                Unable to analyze payment:
+
+                ${error.message}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   CUSTOMER PROFILE
+========================================================= */
+
+async function loadCustomerProfile() {
+
+    const input =
+        document.getElementById(
+            "customerIdInput"
+        );
+
+
+    const result =
+        document.getElementById(
+            "customerProfileResult"
+        );
+
+
+    const customerId =
+        input.value.trim();
+
+
+    if (!customerId) {
+
+        result.innerHTML = `
+
+            <div class="profile-error">
+
+                Please enter a customer ID.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    result.innerHTML =
+        "Loading customer profile...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/customer/${encodeURIComponent(customerId)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Customer profile not found"
+            );
+
+        }
+
+
+        const history =
+            data.payment_history || [];
+
+
+        let historyHTML = "";
+
+
+        if (history.length === 0) {
+
+            historyHTML = `
+
+                <div class="queue-empty">
+
+                    No payment history available.
+
+                </div>
+
+            `;
+
+        }
+
+        else {
+
+            historyHTML =
+                history.map(
+                    payment => {
+
+                        return `
+
+                            <div class="history-item">
+
+                                <h4>
+                                    Payment #${payment.id}
+                                </h4>
+
+
+                                <p>
+
+                                    <strong>
+                                        Amount:
+                                    </strong>
+
+                                    ₹${Number(
+                                        payment.amount
+                                    ).toLocaleString("en-IN")}
+
+                                </p>
+
+
+                                <p>
+
+                                    <strong>
+                                        Failure:
+                                    </strong>
+
+                                    ${payment.failure_reason}
+
+                                </p>
+
+
+                                <p>
+
+                                    <strong>
+                                        Recovery Action:
+                                    </strong>
+
+                                    ${payment.recovery_action}
+
+                                </p>
+
+
+                                <p class="history-status">
+
+                                    <strong>
+                                        Status:
+                                    </strong>
+
+                                    <span
+                                        class="status-badge status-${payment.recovery_status}"
+                                    >
+
+                                        ${payment.recovery_status}
+
+                                    </span>
+
+                                </p>
+
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("");
+
+        }
+
+
+        result.innerHTML = `
+
+            <div class="profile-grid">
+
+
+                <div class="profile-box">
+
+                    <h4>
+                        Customer ID
+                    </h4>
+
+                    <p>
+                        ${data.customer_id}
+                    </p>
+
+                </div>
+
+
+                <div class="profile-box">
+
+                    <h4>
+                        Previous Failed Payments
+                    </h4>
+
+                    <p>
+                        ${data.previous_failed_payments}
+                    </p>
+
+                </div>
+
+
+                <div class="profile-box">
+
+                    <h4>
+                        Total Amount at Risk
+                    </h4>
+
+                    <p>
+                        ₹${Number(
+                            data.total_amount_at_risk
+                        ).toLocaleString("en-IN")}
+                    </p>
+
+                </div>
+
+
+                <div class="profile-box">
+
+                    <h4>
+                        Risk Level
+                    </h4>
+
+                    <p>
+                        ${data.risk_level}
+                    </p>
+
+                </div>
+
+
+                <div class="profile-box">
+
+                    <h4>
+                        Recommended Action
+                    </h4>
+
+                    <p>
+                        ${data.recommended_action}
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="profile-history">
+
+                <h3>
+                    Payment History
+                </h3>
+
+
+                ${historyHTML}
+
+            </div>
+
+        `;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Customer profile error:",
+            error
+        );
+
+
+        result.innerHTML = `
+
+            <div class="profile-error">
+
+                Unable to load customer profile:
+
+                ${error.message}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   VIEW CUSTOMER PROFILE FROM QUEUE
+========================================================= */
+
+function viewCustomerProfile(
+    customerId
+) {
+
+    document.getElementById(
+        "customerIdInput"
+    ).value =
+        customerId;
+
+
+    loadCustomerProfile();
+
+
+    document.getElementById(
+        "customerProfileResult"
+    ).scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   PRIORITY QUEUE
+========================================================= */
+
+async function loadRecoveryPriority() {
+
+    const queue =
+        document.getElementById(
+            "priorityQueue"
+        );
+
+
+    try {
+
+        queue.innerHTML =
+            "Loading recovery priorities...";
+
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/recovery-priority`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Recovery priority request failed"
+            );
+
+        }
+
+
+        queue.innerHTML = "";
+
+
+        if (
+            !data.priority_queue ||
+            data.priority_queue.length === 0
+        ) {
+
+            queue.innerHTML = `
+
+                <div class="queue-empty">
+
+                    No pending recovery payments.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        data.priority_queue.forEach(
+            (payment, index) => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "queue-card";
+
+
+                card.innerHTML = `
+
+                    <h3>
+                        Queue Position #${index + 1}
+                    </h3>
+
+
+                    <p>
+
+                        <strong>
+                            Customer:
+                        </strong>
+
+                        ${payment.customer_id}
+
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="profile-button"
+                        onclick="viewCustomerProfile('${payment.customer_id}')"
+                    >
+
+                        👤 View Customer Profile
+
+                    </button>
+
+
+                    <!-- RECOVERY BUTTONS -->
+
+                    <div class="recovery-buttons">
+
+
+                        <button
+                            type="button"
+                            class="recovery-action-button"
+                            onclick="runRecoveryAction(${payment.id})"
+                        >
+
+                            🤖 Run Recovery Action
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="recovered-button"
+                            onclick="markRecovery(
+                                ${payment.id},
+                                'success'
+                            )"
+                        >
+
+                            ✅ Mark Recovered
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="failed-button"
+                            onclick="markRecovery(
+                                ${payment.id},
+                                'failed'
+                            )"
+                        >
+
+                            ❌ Mark Failed
+
+                        </button>
+
+
+                    </div>
+
+
+                    <!-- PAYMENT DETAILS -->
+
+                    <p>
+
+                        <strong>
+                            Amount:
+                        </strong>
+
+                        ₹${Number(
+                            payment.amount
+                        ).toLocaleString("en-IN")}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Risk Score:
+                        </strong>
+
+                        ${payment.risk_score}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Priority:
+                        </strong>
+
+                        ${payment.priority}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Failure:
+                        </strong>
+
+                        ${payment.failure_reason}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Recovery Action:
+                        </strong>
+
+                        ${payment.recovery_action}
+
+                    </p>
+
+
+                    <!-- AI DECISION -->
+
+                    <div class="decision-box">
+
+                        <strong>
+                            AI Decision Explanation:
+                        </strong>
+
+                        <p>
+
+                            ${payment.decision_explanation ||
+                            "No explanation available."}
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- RECOVERY EXECUTION RESULT -->
+
+                    <div
+                        id="recovery-result-${payment.id}"
+                        class="recovery-result"
+                        style="display:none;"
+                    >
+                    </div>
+
+
+                    <p>
+
+                        <strong>
+                            Retry Count:
+                        </strong>
+
+                        ${payment.retry_count}
+
+                    </p>
+
+                `;
+
+
+                queue.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recovery priority error:",
+            error
+        );
+
+
+        queue.innerHTML = `
+
+            <div class="profile-error">
+
+                Unable to load recovery priority:
+
+                ${error.message}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   RUN RECOVERY ACTION
+========================================================= */
+
+async function runRecoveryAction(
+    paymentId
+) {
+
+    const resultBox =
+        document.getElementById(
+            `recovery-result-${paymentId}`
+        );
+
+
+    /* -----------------------------------------------------
+       STARTING MESSAGE
+    ----------------------------------------------------- */
+
+    if (resultBox) {
+
+        resultBox.style.display =
+            "block";
+
+        resultBox.className =
+            "recovery-result";
+
+
+        resultBox.innerHTML = `
+
+            <h4>
+                🤖 Recovery Execution
+            </h4>
+
+            <p>
+                Starting recovery action...
+            </p>
+
+        `;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/payments/${paymentId}/recover`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                data.detail ||
+                "Recovery action failed."
+            );
+
+        }
+
+
+        if (resultBox) {
+
+            resultBox.style.display =
+                "block";
+
+            resultBox.className =
+                "recovery-result success";
+
+
+            resultBox.innerHTML = `
+
+                <h4>
+                    🤖 Recovery Execution Result
+                </h4>
+
+
+                <p>
+
+                    <strong>
+                        Customer:
+                    </strong>
+
+                    ${data.customer_id}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Recovery Action:
+                    </strong>
+
+                    ${data.recovery_action}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Risk Score:
+                    </strong>
+
+                    ${data.risk_score}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Priority:
+                    </strong>
+
+                    ${data.priority}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Status:
+                    </strong>
+
+                    ${data.recovery_status}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Result:
+                    </strong>
+
+                    ${data.message}
+
+                </p>
+
+            `;
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recovery action error:",
+            error
+        );
+
+
+        if (resultBox) {
+
+            resultBox.style.display =
+                "block";
+
+            resultBox.className =
+                "recovery-result error";
+
+
+            resultBox.innerHTML = `
+
+                <h4>
+                    ❌ Recovery Execution Failed
+                </h4>
+
+
+                <p>
+                    ${error.message}
+                </p>
+
+            `;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE RECOVERY STATUS
+========================================================= */
+
+async function markRecovery(
+    paymentId,
+    status
+) {
+
+    const message =
+        status === "success"
+            ? "Mark this payment as recovered?"
+            : "Mark this recovery as failed?";
+
+
+    const confirmed =
+        confirm(message);
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${BACKEND_URL}/api/payments/${paymentId}/status?status=${status}`,
+                {
+                    method: "PUT"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                data.detail ||
+                "Failed to update recovery status."
+            );
+
+        }
+
+
+        alert(
+            status === "success"
+                ? "Payment marked as recovered!"
+                : "Recovery marked as failed!"
+        );
+
+
+        await loadDashboard();
+
+        await loadRecoveryMetrics();
+
+        await loadRecoveryPriority();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recovery update error:",
+            error
+        );
+
+
+        alert(
+            "Unable to update recovery status: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE DASHBOARD
+========================================================= */
+
+async function initializeDashboard() {
+
+    await checkBackend();
+
+    await loadDashboard();
+
+    await loadRecoveryMetrics();
+
+    await loadRecoveryPriority();
+
+}
+
+
+initializeDashboard();
+
+
+</script>
+
+</body>
+
+</html>
