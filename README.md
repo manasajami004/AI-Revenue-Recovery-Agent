@@ -9,6 +9,12 @@ calculates recovery risk, prioritizes recovery opportunities, and
 recommends the most appropriate recovery action for each customer.
 
 
+## 🚀 Live Demo
+
+👉 **[Open Live Demo](https://ai-revenue-recovery-agent-1.onrender.com)**
+
+The live demo opens the deployed AI Revenue Recovery dashboard directly.
+
 
 \---
 
