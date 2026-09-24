@@ -408,3 +408,47 @@ AI-Revenue-Recovery-Agent
 
 └── README.md
 
+## Demo Data Setup
+
+The SQLite database is excluded from GitHub using `.gitignore`.
+
+After cloning the repository:
+
+Create and activate the virtual environment:
+
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Create the demo data:
+
+cd backend\app
+python seed_demo.py
+
+The seed script checks whether payment records already exist and avoids duplicate demo records.
+
+## Run the Backend
+
+From backend\app:
+
+python -m uvicorn main:app --reload
+
+Backend:
+http://127.0.0.1:8000
+
+Swagger:
+http://127.0.0.1:8000/docs
+
+## Run the Frontend
+
+Open another PowerShell window:
+
+cd backend\frontend
+python -m http.server 5500
+
+Dashboard:
+http://127.0.0.1:5500/index.html
+
